@@ -1,25 +1,26 @@
 
-Vagrant.configure("2") do |config|
+Vagrant.jenkinsure("2") do |jenkins|
 
   # Base operating system
-  config.vm.box = "ubuntu/jammy64"
-  config.vm.hostname = "webserver"
+  jenkins.vm.box = "ubuntu/jammy64"
+  jenkins.vm.hostname = "webserver"
 
   # Network configuration
-  config.vm.network "forwarded_port",
-    guest: 80,
-    host: 8080,
+  jenkins.vm.network "private_network", ip: "192.168.56.10"
+  jenkins.vm.network "forwarded_port",
+    guest: 30080,
+    host: 30080,
     auto_correct: true
 
   # VirtualBox resources
-  config.vm.provider "virtualbox" do |vb|
+  jenkins.vm.provider "virtualbox" do |vb|
     vb.name = "vagrant-webserver"
     vb.memory = 2048
     vb.cpus = 2
   end
 
   # Provisioning
-  config.vm.provision "shell", inline: <<-SHELL
+  jenkins.vm.provision "shell", inline: <<-SHELL
     set -e
 
     apt-get update
